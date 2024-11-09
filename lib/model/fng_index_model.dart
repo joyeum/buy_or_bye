@@ -9,7 +9,7 @@ enum Rating {
   fear,
   extremeFear;
 
-  static RatingFromString(String input) {
+  static Rating RatingFromString(String input) {
     switch (input) {
       case 'extreme greed':
         return Rating.extremeGreed;

@@ -22,18 +22,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primaryColor,
-      body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          child: FutureBuilder<List<FngIndexModel>>(
-              future: FngIndexRepository.fetchDataDaily(),
-              builder: (context, snapshot) {
-                print(snapshot.error);
-                if (snapshot.hasData) {
-                }
-                FngIndexRepository.fetchData();
+      body: Container(
+        width: double.infinity,
+        child: FutureBuilder<List<FngIndexModel>>(
+            future: FngIndexRepository.fetchDataDaily(),
+            builder: (context, snapshot) {
+              print(snapshot.error);
+              if (snapshot.hasData) {
+              }
+              FngIndexRepository.fetchData();
 
-                return Column(
+              return SingleChildScrollView(
+                child: Column(
                   children: [
                     MainStat(),
                     SizedBox(
@@ -59,9 +59,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ],
-                );
-              }),
-        ),
+                ),
+              );
+            }),
       ),
     );
   }

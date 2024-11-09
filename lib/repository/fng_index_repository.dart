@@ -9,20 +9,56 @@ import 'package:isar/isar.dart';
 
 class FngIndexRepository {
   static Future<void> fetchData() async {
-    //캐싱 전략은 다음에
-  //   final now = DateTime.now();
-  //   final compareDateTimeTarget = DateTime(
-  //     now.year,
-  //     now.month,
-  //     now.day,
-  //   );
-  //   print('###########');
-  //   final isar = GetIt.I<Isar>();
-  //   final firstItem = await isar.fngIndexModels
-  //       .sortByDateTime()
-  //       .findFirst();
-  //
-  //   print(firstItem);
+    final now = DateTime.now();
+    final compareDateTime = now.subtract(Duration(days: 2));
+    //.subtract(Duration(hours: 13)) - ET 시간으로 변환법
+
+    final isar = GetIt.I<Isar>();
+    final isUpdated = await isar.fngIndexModels
+        .filter()
+        .dateTimeGreaterThan(compareDateTime)
+        .sortByDateTimeDesc()
+        .count();
+    if (isUpdated > 0) {
+      print('데이터가 존재합니다');
+      return;
+    }
+    print('데이터 불러오는 중');
+    await fetchDataDaily();
+  }
+
+  static Future fetchDataIndex() async {
+    final response = await Dio().get(
+      'https://production.dataviz.cnn.io/index/fearandgreed/graphdata/',
+      options: Options(
+        headers: {
+          'accept':
+              'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+          'accept-encoding': 'gzip, deflate, br, zstd',
+          'accept-language':
+              'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7,de-DE;q=0.6,de;q=0.5',
+          'cache-control': 'max-age=0',
+          'if-none-match': 'W/340831405305825791',
+          'priority': 'u=0, i',
+          'sec-ch-ua':
+              '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
+          'sec-ch-ua-mobile': '?0',
+          'sec-ch-ua-platform': '"macOS"',
+          'sec-fetch-dest': 'document',
+          'sec-fetch-mode': 'navigate',
+          'sec-fetch-site': 'none',
+          'sec-fetch-user': '?1',
+          'upgrade-insecure-requests': '1',
+          'user-agent':
+              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
+        },
+      ),
+    );
+    final isar = GetIt.I<Isar>();
+
+    final rawItem = response.data!['fear_and_greed'] as Map<String, dynamic>;
+    print(rawItem);
+
   }
 
   static Future<List<FngIndexModel>> fetchDataDaily() async {
@@ -57,7 +93,7 @@ class FngIndexRepository {
             .map((item) => item as Map<String, dynamic>)
             .toList();
 
-    List<FngIndexModel> fngIndesModels = [];
+    List<FngIndexModel> fngIndexModels = [];
     final isar = GetIt.I<Isar>();
 
     for (dynamic item in rawItemList) {
@@ -86,6 +122,6 @@ class FngIndexRepository {
     final count = await isar.fngIndexModels.count();
     print(count);
 
-    return fngIndesModels;
+    return fngIndexModels;
   }
 }
