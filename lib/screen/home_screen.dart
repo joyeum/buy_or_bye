@@ -1,9 +1,14 @@
+import 'package:buy_or_bye/component/chart_stat.dart';
 import 'package:buy_or_bye/component/main_stat.dart';
 import 'package:buy_or_bye/component/past_stat.dart';
 import 'package:buy_or_bye/const/color.dart';
 import 'package:buy_or_bye/model/fng_index_model.dart';
 import 'package:buy_or_bye/repository/fng_index_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:isar/isar.dart';
+
+import '../utils/status_utils.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,28 +23,66 @@ class _HomeScreenState extends State<HomeScreen> {
     FngIndexRepository.fetchData();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: primaryColor,
-      body: Container(
-        width: double.infinity,
-        child: FutureBuilder<List<FngIndexModel>>(
-            future: FngIndexRepository.fetchDataDaily(),
-            builder: (context, snapshot) {
-              print(snapshot.error);
-              if (snapshot.hasData) {
-              }
-              FngIndexRepository.fetchData();
+    return FutureBuilder(
+        future: GetIt.I<Isar>()
+            .fngIndexModels
+            .where()
+            .sortByDateTimeDesc()
+            .findFirst(),
+        builder: (context, snapshot) {
+          // FngIndexRepository.fetchDataDaily();
 
-              return SingleChildScrollView(
+          if (snapshot.hasError) {
+            return Center(child: Text(snapshot.error.toString()));
+          }
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          }
+          final fngIndexModel = snapshot.data!;
+          final chance =
+              StatusUtils.getStatusModelFromFngIndex(fngIndex: fngIndexModel);
+          return Scaffold(
+            backgroundColor: chance.primaryColor,
+            body: Container(
+              width: double.infinity,
+              child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    MainStat(),
-                    SizedBox(
-                      height: 100,
+                    MainStat(
+                      fontColor: chance.fontColor,
                     ),
-                    PastStat(),
+                    SizedBox(
+                      height: 50,
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return SizedBox(
+                            width: constraints.maxWidth,
+                            height: 300, // 명시적인 높이 설정
+                            child: FngIndexLineChart(
+                              darkColor: chance.darkColor,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+
+                    SizedBox(
+                      height: 50,
+                    ),
+
+                    PastStat(
+                      darkColor: chance.darkColor,
+                      lightColor: chance.lightColor,
+                      fontColor: chance.fontColor,
+                    ),
+
                     Padding(
                       padding: EdgeInsets.only(
                         right: 20,
@@ -60,9 +103,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-              );
-            }),
-      ),
-    );
+              ),
+            ),
+          );
+        });
   }
 }

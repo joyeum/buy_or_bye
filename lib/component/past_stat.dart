@@ -1,20 +1,32 @@
-import 'package:buy_or_bye/const/color.dart';
 import 'package:buy_or_bye/model/fng_index_model.dart';
 import 'package:flutter/material.dart' hide DateUtils;
 import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 import 'package:buy_or_bye/utils/date_utils.dart';
-import 'package:buy_or_bye/utils/chance_utils.dart';
+import 'package:buy_or_bye/utils/status_utils.dart';
 
 class PastStat extends StatelessWidget {
-  const PastStat({super.key});
+  final darkColor;
+  final lightColor;
+  final fontColor;
+  final Rating recentRating = Rating.extremeFear;
+
+  // final Rating recentRating2 = Rating.fear;
+
+  const PastStat({
+    super.key,
+    required this.darkColor,
+    required this.lightColor,
+    required this.fontColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: GetIt.I<Isar>()
             .fngIndexModels
-            .where()
+            .filter()
+            .ratingEqualTo(recentRating)
             .sortByDateTimeDesc()
             .limit(364)
             .findAll(),
@@ -27,7 +39,7 @@ class PastStat extends StatelessWidget {
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
           }
-          final fngIndexModels = ChanceUtils.uniqueDate(
+          final fngIndexModels = StatusUtils.uniqueDate(
             initialList: snapshot.data!,
           );
 
@@ -51,7 +63,7 @@ class PastStat extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 6),
                       child: Text(
-                        '최근 공포',
+                        '최근 ${recentRating.krName}',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,

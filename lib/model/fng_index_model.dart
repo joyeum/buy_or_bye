@@ -37,7 +37,7 @@ enum Rating {
       case Rating.fear:
         return '공포';
       case Rating.extremeFear:
-        return '극심한 공포';
+        return '절호의 기회';
       default:
         throw Exception('상태가 존재하지 않아요');
     }
@@ -53,5 +53,6 @@ class FngIndexModel {
   late double index;
   @enumerated
   late Rating rating;
+  //나중에 Status랑 리팩토링 필요
 
 }

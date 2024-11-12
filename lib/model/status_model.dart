@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 //기회
 
-class ChanceModel {
+class StatusModel {
   // 단계
   final int level; // 0,1,2,3,4
 
@@ -16,7 +16,7 @@ class ChanceModel {
   final String tempImage;
   final String comment;
 
-  const ChanceModel({
+  const StatusModel({
     required this.level,
     required this.label,
 
