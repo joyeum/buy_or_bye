@@ -55,4 +55,5 @@ class FngIndexModel {
   late Rating rating;
   //나중에 Status랑 리팩토링 필요
 
+
 }

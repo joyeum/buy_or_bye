@@ -19,47 +19,47 @@ class FngIndexRepository {
         .dateTimeGreaterThan(compareDateTime)
         .sortByDateTimeDesc()
         .count();
+    print('데이터 불러오는 중');
+    await fetchDataDaily();
     if (isUpdated > 0) {
       print('데이터가 존재합니다');
       return;
     }
-    print('데이터 불러오는 중');
-    await fetchDataDaily();
   }
 
-  static Future fetchDataIndex() async {
-    final response = await Dio().get(
-      'https://production.dataviz.cnn.io/index/fearandgreed/graphdata/',
-      options: Options(
-        headers: {
-          'accept':
-              'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-          'accept-encoding': 'gzip, deflate, br, zstd',
-          'accept-language':
-              'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7,de-DE;q=0.6,de;q=0.5',
-          'cache-control': 'max-age=0',
-          'if-none-match': 'W/340831405305825791',
-          'priority': 'u=0, i',
-          'sec-ch-ua':
-              '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
-          'sec-ch-ua-mobile': '?0',
-          'sec-ch-ua-platform': '"macOS"',
-          'sec-fetch-dest': 'document',
-          'sec-fetch-mode': 'navigate',
-          'sec-fetch-site': 'none',
-          'sec-fetch-user': '?1',
-          'upgrade-insecure-requests': '1',
-          'user-agent':
-              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
-        },
-      ),
-    );
-    final isar = GetIt.I<Isar>();
-
-    final rawItem = response.data!['fear_and_greed'] as Map<String, dynamic>;
-    print(rawItem);
-
-  }
+  // static Future fetchDataIndex() async {
+  //   final response = await Dio().get(
+  //     'https://production.dataviz.cnn.io/index/fearandgreed/graphdata/',
+  //     options: Options(
+  //       headers: {
+  //         'accept':
+  //             'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+  //         'accept-encoding': 'gzip, deflate, br, zstd',
+  //         'accept-language':
+  //             'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7,de-DE;q=0.6,de;q=0.5',
+  //         'cache-control': 'max-age=0',
+  //         'if-none-match': 'W/340831405305825791',
+  //         'priority': 'u=0, i',
+  //         'sec-ch-ua':
+  //             '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
+  //         'sec-ch-ua-mobile': '?0',
+  //         'sec-ch-ua-platform': '"macOS"',
+  //         'sec-fetch-dest': 'document',
+  //         'sec-fetch-mode': 'navigate',
+  //         'sec-fetch-site': 'none',
+  //         'sec-fetch-user': '?1',
+  //         'upgrade-insecure-requests': '1',
+  //         'user-agent':
+  //             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
+  //       },
+  //     ),
+  //   );
+  //   final isar = GetIt.I<Isar>();
+  //
+  //   final rawItem = response.data!['fear_and_greed'] as Map<String, dynamic>;
+  //   print(rawItem);
+  //
+  // }
 
   static Future<List<FngIndexModel>> fetchDataDaily() async {
     final response = await Dio().get(
@@ -94,6 +94,22 @@ class FngIndexRepository {
             .toList();
 
     List<FngIndexModel> fngIndexModels = [];
+
+//{
+//     "fear_and_greed": {
+//         "score": 66.1428571428571,
+//         "rating": "greed",
+//         "timestamp": "2024-11-29T23:59:42+00:00",
+//         "previous_close": 65.2285714285714,
+//         "previous_1_week": 60.7714285714286,
+//         "previous_1_month": 57.7142857142857,
+//         "previous_1_year": 63.28571428571429
+//     },
+
+
+    final raw = response.data!['fear_and_greed']  as  Map<String, dynamic>;
+      print(raw['score']);
+      print(raw);
     final isar = GetIt.I<Isar>();
 
     for (dynamic item in rawItemList) {
@@ -125,3 +141,5 @@ class FngIndexRepository {
     return fngIndexModels;
   }
 }
+
+

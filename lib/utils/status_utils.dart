@@ -2,6 +2,7 @@ import 'package:buy_or_bye/const/status_level.dart';
 import 'package:buy_or_bye/model/status_model.dart';
 import 'package:buy_or_bye/model/fng_index_model.dart';
 import 'package:buy_or_bye/utils/date_utils.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class StatusUtils {
   static StatusModel getStatusModelFromFngIndex({
@@ -35,6 +36,18 @@ class StatusUtils {
     return uniqueMap.values.toList();
   }
 
+  static List<FlSpot> modelsToSpot({
+    required List<FngIndexModel> initialList,
+  }) {
+    //List<double,double>
+    return uniqueDate(initialList: initialList)
+        .map((item) => FlSpot(
+              item.dateTime.millisecondsSinceEpoch.toDouble(),
+              item.index,
+            ))
+        .toList();
+  }
+
   static List<FngIndexModel> filterByStatus({
     required List<FngIndexModel> initialList,
     required StatusModel status,
@@ -44,5 +57,4 @@ class StatusUtils {
       return itemStatus == status;
     }).toList();
   }
-
 }

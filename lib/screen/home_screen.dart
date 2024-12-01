@@ -33,13 +33,13 @@ class _HomeScreenState extends State<HomeScreen> {
             .sortByDateTimeDesc()
             .findFirst(),
         builder: (context, snapshot) {
-          // FngIndexRepository.fetchDataDaily();
-
           if (snapshot.hasError) {
             return Center(child: Text(snapshot.error.toString()));
           }
           if (!snapshot.hasData) {
-            return CircularProgressIndicator();
+            return Container(
+              child: CircularProgressIndicator(),
+            );
           }
           final fngIndexModel = snapshot.data!;
           final chance =
@@ -52,26 +52,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   children: [
                     MainStat(
+                      fngIndexModel: fngIndexModel,
                       fontColor: chance.fontColor,
                     ),
                     SizedBox(
                       height: 50,
                     ),
 
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return SizedBox(
-                            width: constraints.maxWidth,
-                            height: 300, // 명시적인 높이 설정
-                            child: FngIndexLineChart(
-                              darkColor: chance.darkColor,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(16.0),
+                    //   child: LayoutBuilder(
+                    //     builder: (context, constraints) {
+                    //       return SizedBox(
+                    //         width: constraints.maxWidth,
+                    //         height: 300, // 명시적인 높이 설정
+                    //         child: ChatStat(
+                    //           darkColor: chance.darkColor,
+                    //         ),
+                    //       );
+                    //     },
+                    //   ),
+                    // ),
 
                     SizedBox(
                       height: 50,
