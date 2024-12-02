@@ -95,7 +95,8 @@ class FngIndexRepository {
 
     List<FngIndexModel> fngIndexModels = [];
 
-//{
+// 저장하고 싶은 내용
+// {
 //     "fear_and_greed": {
 //         "score": 66.1428571428571,
 //         "rating": "greed",
@@ -107,9 +108,30 @@ class FngIndexRepository {
 //     },
 
 
-    final raw = response.data!['fear_and_greed']  as  Map<String, dynamic>;
-      print(raw['score']);
-      print(raw);
+    // final raw = response.data!['fear_and_greed']  as  Map<String, dynamic>;
+    //   print(raw['score']);
+    //   print(raw['timestamp']);
+    //   print(raw['previous_close']);
+    //   print(raw);
+
+    final snpItemList =
+    (response.data!['market_momentum_sp500']['data'] as List)
+        .map((item) => item as Map<String, dynamic>)
+        .toList();
+    print(snpItemList);
+
+    final snpAvgItemList =
+    (response.data!['market_momentum_sp125']['data'] as List)
+        .map((item) => item as Map<String, dynamic>)
+        .toList();
+    print(snpAvgItemList);
+
+
+    //
+
+
+
+
     final isar = GetIt.I<Isar>();
 
     for (dynamic item in rawItemList) {

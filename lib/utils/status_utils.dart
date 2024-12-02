@@ -9,8 +9,16 @@ class StatusUtils {
     required FngIndexModel fngIndex,
   }) {
     if (fngIndex.index >= 0 && fngIndex.index <= 100) {
-      int index = (fngIndex.index / 20).floor();
-      return statusLevels[index];
+      if (fngIndex.index <= 25)
+        return statusLevels[0];
+      else if (fngIndex.index <= 45)
+        return statusLevels[1];
+      else if (fngIndex.index <= 55)
+        return statusLevels[2];
+      else if (fngIndex.index <= 75)
+        return statusLevels[3];
+      else
+        return statusLevels[4];
     } else {
       throw Exception('통계 값 오류입니다');
     }
