@@ -8,7 +8,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final dir = await getApplicationDocumentsDirectory();
   final isar = await Isar.open(
-    [FngIndexModelSchema],
+    [MetadataSchema,FngIndexModelSchema],
     directory : dir.path,
   );
   GetIt.I.registerSingleton<Isar>(isar);

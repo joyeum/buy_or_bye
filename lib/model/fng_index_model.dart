@@ -45,6 +45,21 @@ enum Rating {
 }
 
 @collection
+class Metadata {
+  Id id = 0; // 항상 0으로 고정
+  late double index;
+
+  late double index_previous_close;
+  late double index_previous_1_week;
+  late double index_previous_1_month;
+  late double index_previous_1_year;
+  late DateTime lastUpdated; //데이터셋의 마지막 업데이트 시간
+
+  @enumerated
+  late Rating rating;
+}
+
+@collection
 class FngIndexModel {
   Id id = Isar.autoIncrement;
 
@@ -53,7 +68,5 @@ class FngIndexModel {
   late double index;
   @enumerated
   late Rating rating;
-  //나중에 Status랑 리팩토링 필요
-
-
+//나중에 Status랑 리팩토링 필요
 }

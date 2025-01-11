@@ -1,7 +1,6 @@
 import 'package:buy_or_bye/component/chart_stat.dart';
 import 'package:buy_or_bye/component/main_stat.dart';
 import 'package:buy_or_bye/component/past_stat.dart';
-import 'package:buy_or_bye/const/color.dart';
 import 'package:buy_or_bye/model/fng_index_model.dart';
 import 'package:buy_or_bye/repository/fng_index_repository.dart';
 import 'package:flutter/material.dart';
