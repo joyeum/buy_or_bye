@@ -5,22 +5,29 @@ import 'package:isar/isar.dart';
 
 class FngIndexRepository {
   static Future<void> fetchData() async {
-    final now = DateTime.now();
-    final compareDateTime = now.subtract(Duration(days: 2));
-    //.subtract(Duration(hours: 13)) - ET 시간으로 변환법
 
     final isar = GetIt.I<Isar>();
-    final isUpdated = await isar.fngIndexModels
-        .filter()
-        .dateTimeGreaterThan(compareDateTime)
-        .sortByDateTimeDesc()
-        .count();
-    print('데이터 불러오는 중');
-    await fetchDataDaily();
-    if (isUpdated > 0) {
-      print('데이터가 존재합니다');
-      return;
+    final metadata = await isar.metadatas.get(0);
+    if (metadata != null){
+
+      final lastUpdated = metadata.lastUpdated;
+      final compareDateTime = DateTime.now().subtract(Duration(days: 1));
+      print('데이터가 있어요. 마지막 업데이트 시간 : ${lastUpdated} 비교 기준 시간 : ${compareDateTime}');
+
+
+      if (lastUpdated.isBefore(compareDateTime)){
+        print('데이터가 하루 이상 지났습니다. 데이터를 업데이트합니다.');
+        await fetchDataDaily();
+      }
+      else {
+        print('데이터가 최신 상태입니다. 업데이트가 필요하지 않습니다.');
+      }
     }
+    else {
+      print('데이터 불러오는 중');
+      await fetchDataDaily();
+    }
+
   }
 
   static Future<List<FngIndexModel>> fetchDataDaily() async {
@@ -56,13 +63,13 @@ class FngIndexRepository {
         response.data!['fear_and_greed'] as Map<String, dynamic>;
     //
     final metadata = Metadata()
-      ..lastUpdated = rawMetadata['timestamp']
+      ..lastUpdated = DateTime.parse(rawMetadata['timestamp'])
       ..index = rawMetadata['score']
       ..index_previous_close = rawMetadata['previous_close']
       ..index_previous_1_week = rawMetadata['previous_1_week']
       ..index_previous_1_month = rawMetadata['previous_1_month']
       ..index_previous_1_year = rawMetadata['previous_1_year']
-      ..rating = rawMetadata['rating'];
+      ..rating = Rating.RatingFromString(rawMetadata['rating']);
 
     await isar.writeTxn(() async {
       await isar.metadatas.put(metadata);
@@ -102,13 +109,13 @@ class FngIndexRepository {
         (response.data!['market_momentum_sp500']['data'] as List)
             .map((item) => item as Map<String, dynamic>)
             .toList();
-    print(snpItemList);
+    // print(snpItemList);
 
     final snpAvgItemList =
         (response.data!['market_momentum_sp125']['data'] as List)
             .map((item) => item as Map<String, dynamic>)
             .toList();
-    print(snpAvgItemList);
+    // print(snpAvgItemList);
 
     print('--------------------');
     final count = await isar.fngIndexModels.count();
