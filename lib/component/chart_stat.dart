@@ -4,10 +4,10 @@ import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 import '../model/fng_index_model.dart';
 
-class ChatStat extends StatelessWidget {
+class ChartStat extends StatelessWidget {
   final Color darkColor;
 
-  ChatStat({required this.darkColor});
+  ChartStat({required this.darkColor});
 
   @override
   Widget build(BuildContext context) {
@@ -16,108 +16,91 @@ class ChatStat extends StatelessWidget {
       child: FutureBuilder<List<FngIndexModel>>(
         future: _fetchData(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState != ConnectionState.done) {
             return Center(child: CircularProgressIndicator());
           }
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+          if (snapshot.hasError || snapshot.data?.isEmpty == true) {
+            return Center(child: Text('No data'));
           }
-          final data = snapshot.data ?? [];
-          if (data.isEmpty) {
-            return Center(child: Text('No data available'));
-          }
-          return LineChart(_buildChart(data));
+          return LineChart(_buildChart(snapshot.data!));
         },
       ),
     );
   }
 
-  Future<List<FngIndexModel>> _fetchData() {
+  Future<List<FngIndexModel>> _fetchData() async {
     return GetIt.I<Isar>()
         .fngIndexModels
         .where()
         .sortByDateTimeDesc()
-        .limit(30)
         .findAll();
   }
 
   LineChartData _buildChart(List<FngIndexModel> data) {
     return LineChartData(
-      minY: 0,
-      maxY: 100,
-      titlesData: FlTitlesData(
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            getTitlesWidget: (value, meta) => Text(
-              _formatMonth(value),
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-        leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)),
-      ),
-      gridData: FlGridData(show: true),
-      borderData: FlBorderData(show: false),
       lineBarsData: [
         LineChartBarData(
           spots: data
-              .map((e) => FlSpot(
-            e.dateTime.millisecondsSinceEpoch.toDouble(),
-            e.index.toDouble(),
-          ))
+              .map((e) => FlSpot(e.dateTime.millisecondsSinceEpoch.toDouble(),
+                  e.index.toDouble()))
               .toList(),
           color: darkColor,
           barWidth: 2,
-        ),
+        )
       ],
+
+      titlesData: FlTitlesData(
+        topTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: false, // 상단 라벨 숨김
+          ),
+        ),
+        rightTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: false, // 상단 라벨 숨김
+          ),
+        ),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            interval: _calculateDynamicInterval(data), // 동적 간격 설정
+            getTitlesWidget: (value, meta) {
+              return Text(
+                _formatMonth(value),
+              );
+            },
+          ),
+        ),
+      ),
+      minY: 0,
+      maxY: 100,
     );
   }
 
+  double _calculateDynamicInterval(List<FngIndexModel> data) {
+    if (data.isEmpty) return 30 * 24 * 60 * 60 * 1000; // 기본값: 약 1달
+    final start = data.last.dateTime.millisecondsSinceEpoch.toDouble();
+    final end = data.first.dateTime.millisecondsSinceEpoch.toDouble();
+    final range = end - start;
+    return range / 6; // 약 12개의 라벨을 기준으로 간격 계산
+  }
+
   String _formatMonth(double value) {
-    final month = DateTime.fromMillisecondsSinceEpoch(value.toInt()).month;
-    return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][month - 1];
+    final date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+    final month = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ][date.month - 1];
+    return '$month'; // 필요하면 '$month ${date.year}'로 연도 추가
   }
 }
-
-
-//gridData: FlGridData(show: true),
-
-// titlesData: FlTitlesData(
-//   topTitles: AxisTitles(
-//       sideTitles: SideTitles(
-//     showTitles: false,
-//   )),
-//   leftTitles: AxisTitles(
-//     sideTitles: SideTitles(showTitles: true),
-//   ),
-//   bottomTitles: AxisTitles(
-//     sideTitles: SideTitles(
-//       showTitles: true,
-//       getTitlesWidget: (value, _) {
-//         final date = DateTime.fromMillisecondsSinceEpoch(
-//             value.toInt());
-//         return Text(
-//             DateUtils.DateTimeToString(dateTime: date));
-//       },
-//     ),
-//   ),
-// ),
-// borderData: FlBorderData(show: false),
-// lineBarsData: [
-//   LineChartBarData(
-//     spots: fngIndexModels
-//         .map((item) => FlSpot(
-//               item.dateTime.millisecondsSinceEpoch.toDouble(),
-//               item.index,
-//             ))
-//         .toList(),
-//     isCurved: true,
-//     barWidth: 2,
-//     color: darkColor,
-//     belowBarData: BarAreaData(
-//         show: true, color: darkColor.withOpacity(0.3)),
-//   ),
-// ],
-//)
-// ,

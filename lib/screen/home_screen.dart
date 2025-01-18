@@ -55,28 +55,28 @@ class _HomeScreenState extends State<HomeScreen> {
                       fngIndexModel: fngIndexModel,
                       fontColor: chance.fontColor,
                     ),
-                    SizedBox(
-                      height: 50,
+                    // SizedBox(
+                    //   height: 20,
+                    // ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return SizedBox(
+                            width: constraints.maxWidth,
+                            height: 300, // 명시적인 높이 설정
+                            child: ChartStat(
+                              darkColor: chance.darkColor,
+                            ),
+                          );
+                        },
+                      ),
                     ),
 
-                    // Padding(
-                    //   padding: const EdgeInsets.all(16.0),
-                    //   child: LayoutBuilder(
-                    //     builder: (context, constraints) {
-                    //       return SizedBox(
-                    //         width: constraints.maxWidth,
-                    //         height: 300, // 명시적인 높이 설정
-                    //         child: ChatStat(
-                    //           darkColor: chance.darkColor,
-                    //         ),
-                    //       );
-                    //     },
-                    //   ),
-                    // ),
-                    //
-                    // SizedBox(
-                    //   height: 50,
-                    // ),
+                    SizedBox(
+                      height: 20,
+                    ),
 
                     PastStat(
                       darkColor: chance.darkColor,
@@ -109,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           return Container(
                             width: double.infinity,
                             child: Text(
-                              '업데이트 됨 ${DateUtils.DateTimeToString(dateTime:lastUpdated)}',
+                              '${DateUtils.formatDateTime(dateTime:lastUpdated)} 업데이트 됨',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,
