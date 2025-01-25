@@ -106,17 +106,34 @@ class _HomeScreenState extends State<HomeScreen> {
                           final metadata = snapshot.data!;
                           final lastUpdated = metadata.lastUpdated;
 
-                          return Container(
-                            width: double.infinity,
-                            child: Text(
-                              '${DateUtils.formatDateTime(dateTime:lastUpdated)} 업데이트 됨',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  '${DateUtils.formatDateTime(dateTime: lastUpdated)} 업데이트 됨',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
                               ),
-                              textAlign: TextAlign.right,
-                            ),
+                              IconButton(
+                                onPressed: () {
+                                  FngIndexRepository.fetchData();
+                                  // 아이콘 버튼 클릭 시 실행될 동작 추가
+                                },
+                                icon: Icon(
+                                  Icons.refresh, // 원하는 아이콘으로 변경 가능
+                                  color: Colors.white, // 아이콘 색상
+                                ),
+                                tooltip: '새로고침', // 버튼에 툴팁 추가 (선택 사항)
+                              ),
+                            ],
                           );
+
+
                         }
                       ),
                     ),
