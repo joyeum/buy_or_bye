@@ -1,10 +1,8 @@
 import 'package:buy_or_bye/component/chart_stat.dart';
 import 'package:buy_or_bye/component/main_stat.dart';
 import 'package:buy_or_bye/component/past_stat.dart';
-import 'package:buy_or_bye/model/fng_index_model.dart';
 import 'package:buy_or_bye/repository/fng_index_repository.dart';
-import 'package:get_it/get_it.dart';
-import 'package:isar/isar.dart';
+
 import 'package:flutter/material.dart' hide DateUtils;
 
 import '../utils/status_utils.dart';
@@ -26,38 +24,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: GetIt.I<Isar>()
-            .fngIndexModels
-            .where()
-            .sortByDateTimeDesc()
-            .findFirst(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text(snapshot.error.toString()));
-          }
-          if (!snapshot.hasData) {
-            return Container(
-              child: CircularProgressIndicator(),
-            );
-          }
-          final fngIndexModel = snapshot.data!;
-          final chance =
-              StatusUtils.getStatusModelFromFngIndex(fngIndex: fngIndexModel);
+    return Builder(
+
+        builder: (context) {
+
           return Scaffold(
-            backgroundColor: chance.primaryColor,
+            backgroundColor: Colors.black,
             body: Container(
               width: double.infinity,
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    MainStat(
-                      fngIndexModel: fngIndexModel,
-                      fontColor: chance.fontColor,
-                    ),
+                    MainStat(),
                     // SizedBox(
                     //   height: 20,
                     // ),
+
 
                     Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -65,9 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         builder: (context, constraints) {
                           return SizedBox(
                             width: constraints.maxWidth,
-                            height: 300, // 명시적인 높이 설정
+                            height: 400, // 명시적인 높이 설정
                             child: ChartStat(
-                              darkColor: chance.darkColor,
+                              darkColor: Colors.black,
                             ),
                           );
                         },
@@ -79,64 +61,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
 
                     PastStat(
-                      darkColor: chance.darkColor,
-                      lightColor: chance.lightColor,
-                      fontColor: chance.fontColor,
+                      darkColor: Colors.black,
+                      lightColor: Colors.blue,
+                      fontColor: Colors.white,
                     ),
 
-                    Padding(
-                      padding: EdgeInsets.only(
-                        right: 20,
-                        left: 20,
-                        top: 4,
-                      ),
-                      child: FutureBuilder(
-                        future: GetIt.I<Isar>()
-                            .metadatas.get(0),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError){
-                            return Center(child: Text(snapshot.error.toString()));
-                          }
-                          if (!snapshot.hasData) {
-                            return Container(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
 
-                          final metadata = snapshot.data!;
-                          final lastUpdated = metadata.lastUpdated;
-
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  '${DateUtils.formatDateTime(dateTime: lastUpdated)} 업데이트 됨',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                  textAlign: TextAlign.right,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  FngIndexRepository.fetchData();
-                                  // 아이콘 버튼 클릭 시 실행될 동작 추가
-                                },
-                                icon: Icon(
-                                  Icons.refresh, // 원하는 아이콘으로 변경 가능
-                                  color: Colors.white, // 아이콘 색상
-                                ),
-                                tooltip: '새로고침', // 버튼에 툴팁 추가 (선택 사항)
-                              ),
-                            ],
-                          );
-
-
-                        }
-                      ),
-                    ),
                   ],
                 ),
               ),

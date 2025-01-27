@@ -8,7 +8,7 @@ class StatusModel {
   // 단계 이름
   final String label;
 
-  final Color primaryColor;
+  final Color statusColor;
   final Color darkColor;
   final Color lightColor;
   final Color fontColor;
@@ -20,7 +20,7 @@ class StatusModel {
     required this.level,
     required this.label,
 
-    required this.primaryColor,
+    required this.statusColor,
     required this.darkColor,
     required this.lightColor,
     required this.fontColor,

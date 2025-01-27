@@ -1,3 +1,4 @@
+import 'package:buy_or_bye/const/colors.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -11,19 +12,38 @@ class ChartStat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 300,
-      child: FutureBuilder<List<FngIndexModel>>(
-        future: _fetchData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError || snapshot.data?.isEmpty == true) {
-            return Center(child: Text('No data'));
-          }
-          return LineChart(_buildChart(snapshot.data!));
-        },
+    return Card(
+      color: backgroundColor,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              '탐욕 지수',
+                style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w700,)
+            ),
+          ),
+          SizedBox(
+            height: 300,
+            child: FutureBuilder<List<FngIndexModel>>(
+              future: _fetchData(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError || snapshot.data?.isEmpty == true) {
+                  return Center(child: Text('No data'));
+                }
+                return LineChart(_buildChart(
+                  snapshot.data!,
+                ));
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -48,7 +68,6 @@ class ChartStat extends StatelessWidget {
           barWidth: 2,
         )
       ],
-
       titlesData: FlTitlesData(
         topTitles: AxisTitles(
           sideTitles: SideTitles(

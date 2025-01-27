@@ -5,7 +5,7 @@ const statusLevels = [
   StatusModel(
       level: 0,
       label: '절호의 기회',
-      primaryColor: Color(0xFF2196F3),
+      statusColor: Color(0xFF2196F3),
       darkColor: Color(0xFF0069C0),
       lightColor: Color(0xFF6EC6FF),
       fontColor: Colors.black,
@@ -14,7 +14,7 @@ const statusLevels = [
   StatusModel(
       level: 1,
       label: '기회',
-      primaryColor: Color(0xFF00bcd4),
+      statusColor: Color(0xFF00bcd4),
       darkColor: Color(0xFF008ba3),
       lightColor: Color(0xFF62efff),
       fontColor: Colors.black,
@@ -23,7 +23,7 @@ const statusLevels = [
   StatusModel(
       level: 2,
       label: '중립',
-      primaryColor: Color(0xFF009688),
+      statusColor: Color(0xFF009688),
       darkColor: Color(0xFF00675b),
       lightColor: Color(0xFF52c7b8),
       fontColor: Colors.black,
@@ -32,7 +32,7 @@ const statusLevels = [
   StatusModel(
       level: 3,
       label: '버블',
-      primaryColor: Color(0xFFffc107),
+      statusColor: Color(0xFFffc107),
       darkColor: Color(0xFFc79100),
       lightColor: Color(0xFFfff350),
       fontColor: Colors.black,
@@ -41,7 +41,7 @@ const statusLevels = [
   StatusModel(
       level: 4,
       label: '고점 주의',
-      primaryColor: Color(0xFFf44336),
+      statusColor: Color(0xFFf44336),
       darkColor: Color(0xFFba000d),
       lightColor: Color(0xFFff7961),
       fontColor: Colors.black,
