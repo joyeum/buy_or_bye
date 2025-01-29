@@ -6,28 +6,13 @@ import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 import 'package:buy_or_bye/const/colors.dart';
 import 'package:buy_or_bye/repository/fng_index_repository.dart';
+import 'package:buy_or_bye/const/styles.dart';
 
 class MainStat extends StatelessWidget {
-  final Color statusFontColor = Colors.white;
-  final Color introFontColor = lightGrey;
-  final Color subFontColor = darkGrey;
-
-  const MainStat({
-    super.key,
-  });
+  const MainStat({super.key});
 
   @override
   Widget build(BuildContext context) {
-    TextStyle ts_sub = TextStyle(
-      color: subFontColor,
-      fontSize: 16,
-    );
-    TextStyle ts_main = TextStyle(
-      color: introFontColor,
-      fontSize: 18,
-      fontWeight: FontWeight.w700,
-    );
-
     return SafeArea(
       child: FutureBuilder(
         future: Future.wait([
@@ -54,7 +39,7 @@ class MainStat extends StatelessWidget {
           }
 
           final chance =
-              StatusUtils.getStatusModelFromFngIndex(fngIndex: fngIndexModel);
+          StatusUtils.getStatusModelFromFngIndex(fngIndex: fngIndexModel);
           final lastUpdated = metadata.lastUpdated;
 
           return Column(
@@ -71,12 +56,12 @@ class MainStat extends StatelessWidget {
                   children: [
                     Text(
                       '탐욕 지수',
-                      style: ts_sub,
+                      style: AppStyles.subText,
                     ),
                     SizedBox(width: 12),
                     Text(
                       '${fngIndexModel.index.round().toInt()}/100',
-                      style: ts_sub.copyWith(
+                      style: AppStyles.subText.copyWith(
                         fontWeight: FontWeight.w800,
                         color: chance.statusColor,
                       ),
@@ -87,10 +72,9 @@ class MainStat extends StatelessWidget {
               SizedBox(height: 20),
               Text(
                 chance.label,
-                style: ts_main.copyWith(
+                style: AppStyles.title.copyWith(
                   fontWeight: FontWeight.w900,
                   fontSize: 36,
-                  color: statusFontColor,
                 ),
               ),
               Text(
@@ -99,7 +83,7 @@ class MainStat extends StatelessWidget {
               ),
               Text(
                 chance.comment,
-                style: ts_main.copyWith(fontSize: 24),
+                style: AppStyles.title.copyWith(fontSize: 24),
                 textAlign: TextAlign.center,
               ),
               Padding(
@@ -109,7 +93,7 @@ class MainStat extends StatelessWidget {
                   children: [
                     Text(
                       '${DateUtils.formatDateTime(dateTime: lastUpdated)} 업데이트 됨',
-                      style: ts_sub.copyWith(fontSize: 12),
+                      style: AppStyles.subText.copyWith(fontSize: 12),
                       textAlign: TextAlign.center,
                     ),
                     IconButton(
@@ -118,7 +102,7 @@ class MainStat extends StatelessWidget {
                       },
                       icon: Icon(
                         Icons.refresh,
-                        color: subFontColor,
+                        color: AppStyles.subText.color,
                       ),
                       tooltip: '새로고침',
                     ),
