@@ -11,6 +11,7 @@ class FngIndexRepository {
     if (metadata != null){
 
       final lastUpdated = metadata.lastUpdated;
+      //final compareDateTime = DateTime.now();
       final compareDateTime = DateTime.now().subtract(Duration(days: 1));
       print('데이터가 있어요. 마지막 업데이트 시간 : ${lastUpdated} 비교 기준 시간 : ${compareDateTime}');
 
