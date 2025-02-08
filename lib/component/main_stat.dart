@@ -9,7 +9,10 @@ import 'package:buy_or_bye/repository/fng_index_repository.dart';
 import 'package:buy_or_bye/const/styles.dart';
 
 class MainStat extends StatelessWidget {
-  const MainStat({super.key});
+  final FngIndexModel fngIndexModel;
+  final MetaData metadata;
+  final VoidCallback onRefresh;
+  const MainStat({required this.fngIndexModel, required this.metadata,required this.onRefresh,super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +102,7 @@ class MainStat extends StatelessWidget {
                     IconButton(
                       onPressed: () {
                         FngIndexRepository.fetchData();
+                        onRefresh();
                       },
                       icon: Icon(
                         Icons.refresh,
