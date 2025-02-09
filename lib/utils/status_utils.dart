@@ -56,6 +56,15 @@ class StatusUtils {
         .toList();
   }
 
+  static List<FngIndexModel> filterByRating({
+    required List<FngIndexModel> initialList,
+    required Rating rating,
+  }) {
+    // uniqueDate 후 특정 Rating 값으로 필터링
+    return uniqueDate(initialList: initialList)
+        .where((item) => item.rating == rating)
+        .toList();
+  }
   static List<FngIndexModel> filterByStatus({
     required List<FngIndexModel> initialList,
     required StatusModel status,

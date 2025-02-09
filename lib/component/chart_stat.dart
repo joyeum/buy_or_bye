@@ -2,15 +2,15 @@ import 'package:buy_or_bye/const/styles.dart';
 import 'package:buy_or_bye/const/colors.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:isar/isar.dart';
+
 import '../model/fng_index_model.dart';
 
 class ChartStat extends StatelessWidget {
   static const double padding = 24;
   static const int days = 365;
+  final List<FngIndexModel> chartData;
 
-  ChartStat({super.key});
+  ChartStat({required this.chartData, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,35 +32,19 @@ class ChartStat extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.only(bottom: 16),
-      child: Text('공포 탐욕 지수', style: AppStyles.title, textAlign: TextAlign.left),
+      child:
+          Text('공포 탐욕 지수', style: AppStyles.title, textAlign: TextAlign.left),
     );
   }
 
   Widget _buildChartContainer() {
     return Expanded(
-      child: FutureBuilder<List<FngIndexModel>>(
-        future: _getData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError || snapshot.data?.isEmpty == true) {
-            return const Center(child: Text('No data'));
-          }
-          return LineChart(_buildChart(snapshot.data!));
-        },
+      child: LineChart(
+        _buildChart(chartData),
       ),
     );
   }
 
-  Future<List<FngIndexModel>> _getData() async {
-    return GetIt.I<Isar>()
-        .fngIndexModels
-        .where()
-        .sortByDateTimeDesc()
-        .limit(days)
-        .findAll();
-  }
 
   LineChartData _buildChart(List<FngIndexModel> data) {
     return LineChartData(
@@ -81,9 +65,9 @@ class ChartStat extends StatelessWidget {
     return LineChartBarData(
       spots: data
           .map((e) => FlSpot(
-        e.dateTime.millisecondsSinceEpoch.toDouble(),
-        e.index.toDouble(),
-      ))
+                e.dateTime.millisecondsSinceEpoch.toDouble(),
+                e.index.toDouble(),
+              ))
           .toList(),
       color: primaryColor,
       barWidth: 2,
@@ -135,7 +119,8 @@ class ChartStat extends StatelessWidget {
           if (timestamp == minX || timestamp == maxX) {
             return const SizedBox.shrink();
           }
-          return Text(_formatMonth(timestamp), style: AppStyles.subText.copyWith(fontSize: 10));
+          return Text(_formatMonth(timestamp),
+              style: AppStyles.subText.copyWith(fontSize: 10));
         },
       ),
     );
@@ -174,8 +159,18 @@ class ChartStat extends StatelessWidget {
   String _formatMonth(double timestamp) {
     final date = DateTime.fromMillisecondsSinceEpoch(timestamp.toInt());
     const months = [
-      '1월', '2월', '3월', '4월', '5월', '6월',
-      '7월', '8월', '9월', '10월', '11월', '12월'
+      '1월',
+      '2월',
+      '3월',
+      '4월',
+      '5월',
+      '6월',
+      '7월',
+      '8월',
+      '9월',
+      '10월',
+      '11월',
+      '12월'
     ];
     return months[date.month - 1];
   }
