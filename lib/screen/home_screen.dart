@@ -7,9 +7,9 @@ import 'package:buy_or_bye/repository/fng_index_repository.dart';
 import 'package:flutter/material.dart' hide DateUtils;
 import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../utils/status_utils.dart';
+import '../component/common/loading/loading_skeleton.dart';
 
 class HomeScreen extends StatefulWidget {
   static const TextStyle tsTitle = TextStyle(
@@ -25,11 +25,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  static const int CHART_DAYS = 365;
+  static const Rating RECENT_RATING = Rating.extremeFear;
+  
   Future<List<dynamic>>? _futureData;
-  static const int chart_days = 365;
-  final Rating recentRating = Rating.extremeFear;
-// 1. fetchData : save
-// 2. _loadData : save
 
   @override
   void initState() {
@@ -41,7 +40,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<List<dynamic>> _fetchData() async {
     final metadata = await GetIt.I<Isar>().metadatas.get(0);
-    final indexAll = await GetIt.I<Isar>().fngIndexModels.where().sortByDateTimeDesc().findAll();
+    final indexAll = await GetIt.I<Isar>()
+        .fngIndexModels
+        .where()
+        .sortByDateTimeDesc()
+        .findAll();
 
     return [metadata, indexAll];
   }
@@ -61,14 +64,14 @@ class _HomeScreenState extends State<HomeScreen> {
           : FutureBuilder(
               future: _futureData,
               builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return _buildSkeletonUI(); // Skeleton UI 표시
+                if (_shouldShowLoading(snapshot)) {
+                  return _buildSkeletonUI();
                 }
-                if (snapshot.hasError) {
-                  return _buildErrorUI(snapshot.error.toString()); // 리프레시 버튼 제공
+                if (_shouldShowError(snapshot)) {
+                  return _buildErrorUI(snapshot.error.toString());
                 }
-                if (!snapshot.hasData || snapshot.data!.length < 2) {
-                  return Center(child: Text('데이터가 없습니다.'));
+                if (_shouldShowEmptyState(snapshot)) {
+                  return const Center(child: Text('데이터가 없습니다.'));
                 }
 
                 final metadata = snapshot.data![0];
@@ -78,12 +81,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 // 특정 Rating으로 필터링된 데이터
                 final pastData = StatusUtils.filterByRating(
                   initialList: chartData,
-                  rating: recentRating,
+                  rating: RECENT_RATING,
                 );
 
                 if (fngIndexModel == null || metadata == null) {
-                  print('errorr!!! $fngIndexModel $metadata');
-
+                  debugPrint('Error: FngIndexModel or metadata is null. FngIndexModel: $fngIndexModel, Metadata: $metadata');
                   return _buildErrorUI("데이터를 불러오는 중 오류가 발생했습니다.");
                 }
                 return SingleChildScrollView(
@@ -107,39 +109,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: AppStyles.padding,
                         ),
                         PastStat(
-                          recentRating: recentRating,
+                          recentRating: RECENT_RATING,
                           pastData: pastData,
                         ),
                       ],
                     ),
                   ),
                 );
-              }),
+              },
+            ),
     );
   }
 
   Widget _buildSkeletonUI() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: SafeArea(
-        child: Column(
-          children: List.generate(3, (index) {
-            return Shimmer.fromColors(
-              baseColor: Colors.grey[700]!,
-              highlightColor: Colors.grey[500]!,
-              child: Container(
-                height: 100,
-                margin: const EdgeInsets.only(bottom: 16.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            );
-          }),
-        ),
-      ),
-    );
+    return const LoadingSkeleton();
   }
 
   Widget _buildErrorUI(String errorMessage) {
@@ -149,16 +132,35 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Text(
             '오류 발생: $errorMessage',
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 24),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
             onPressed: _loadData,
-            child: Text('다시 시도하기'),
+            child: const Text('다시 시도하기'),
           ),
         ],
       ),
     );
+  }
+
+  bool _shouldShowLoading(AsyncSnapshot<List<dynamic>> snapshot) {
+    return snapshot.connectionState == ConnectionState.waiting;
+  }
+
+  bool _shouldShowError(AsyncSnapshot<List<dynamic>> snapshot) {
+    return snapshot.hasError;
+  }
+
+  bool _shouldShowEmptyState(AsyncSnapshot<List<dynamic>> snapshot) {
+    return !snapshot.hasData || snapshot.data!.length < 2;
   }
 }
