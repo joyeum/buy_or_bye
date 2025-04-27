@@ -47,6 +47,13 @@ class MainStat extends StatelessWidget {
                   color: chance.statusColor,
                 ),
               ),
+              IconButton(
+                icon: Icon(Icons.info_outline, color: AppStyles.subText.color, size: 18),
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(),
+                onPressed: () => _showInfoDialog(context),
+                tooltip: '탐욕 지수 정보',
+              ),
             ],
           ),
         ),
@@ -93,5 +100,64 @@ class MainStat extends StatelessWidget {
         ),
       ],
     ));
+  }
+
+  // 팝업 다이얼로그 메서드 수정
+  void _showInfoDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: backgroundDark,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Container(
+          padding: const EdgeInsets.all(AppStyles.padding),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '어떻게 계산했나요?',
+                    style: AppStyles.title,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close, color: Colors.white),
+                    onPressed: () => Navigator.of(context).pop(),
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              Text(
+                'CNN에서 발간한 공포탐욕지수를 기반으로 계산해요. 사람들이 공포에 질릴 때를 노려보세요',
+                style: AppStyles.baseText.copyWith(color: Colors.white),
+              ),
+              SizedBox(height: 24),
+              // 버튼 우측 정렬
+              Align(
+                alignment: Alignment.centerRight,
+                child: SizedBox(
+                  width: 120,
+                  height: 40,
+                  child: ElevatedButton(
+                    child: Text('확인'),
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: infoBlue,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
