@@ -1,15 +1,15 @@
 import 'package:buy_or_bye/component/chart_stat.dart';
 import 'package:buy_or_bye/component/main_stat.dart';
 import 'package:buy_or_bye/component/past_stat.dart';
+import 'package:buy_or_bye/const/styles.dart';
 import 'package:buy_or_bye/model/fng_index_model.dart';
 import 'package:buy_or_bye/repository/fng_index_repository.dart';
+import 'package:flutter/material.dart' hide DateUtils;
 import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
-import 'package:flutter/material.dart' hide DateUtils;
-import 'package:buy_or_bye/const/styles.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // 추가
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // 다국어 지원
 import '../utils/status_utils.dart';
+import '../component/common/loading/loading_skeleton.dart';
 
 class HomeScreen extends StatefulWidget {
   static const TextStyle tsTitle = TextStyle(
@@ -25,41 +25,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late Future<List<dynamic>> _futureData;
-  static const int chart_days = 365;
-  final Rating recentRating = Rating.extremeFear;
+  static const int CHART_DAYS = 365;
+  static const Rating RECENT_RATING = Rating.extremeFear;
+
+  Future<List<dynamic>>? _futureData;
+  bool _isUpdating = false;
+  bool _updateCompleted = false;
 
   @override
   void initState() {
-    FngIndexRepository.fetchData();
     super.initState();
-    _loadData();
-  }
-
-  Future<List<dynamic>> _fetchData() async {
-    final metadata = await GetIt.I<Isar>().metadatas.get(0);
-    final indexAll = await GetIt.I<Isar>()
-        .fngIndexModels
-        .where()
-        .sortByDateTimeDesc()
-        .findAll();
-
-    return [metadata, indexAll];
-  }
-
-  void _loadData() {
-    setState(() {
-      _futureData = _fetchData();
-    });
+    // 백그라운드에서 데이터 업데이트
+    _updateData();
   }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!; // 추가
+    final localizations = AppLocalizations.of(context)!; // 다국어 지원
 
     return Scaffold(
       backgroundColor: Colors.black,
-      // 🧪 테스트용 FloatingActionButton 추가
+      // 🧪 테스트용 FloatingActionButton (개발 중에만 사용)
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -87,99 +73,168 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: FutureBuilder(
-          future: _futureData,
-          builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+      body: Stack(
+        children: [
+          // 메인 콘텐츠
+          _futureData == null
+              ? _buildSkeletonUI()
+              : FutureBuilder(
+                  future: _futureData,
+                  builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+                    if (_shouldShowLoading(snapshot)) {
+                      return _buildSkeletonUI();
+                    }
+                    if (_shouldShowError(snapshot)) {
+                      return _buildErrorUI(snapshot.error.toString(), localizations);
+                    }
+                    if (_shouldShowEmptyState(snapshot)) {
+                      return Center(
+                        child: Text(
+                          localizations.errorNoData, // 다국어 적용
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      );
+                    }
 
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return _buildSkeletonUI();  // Skeleton UI 표시
-            }
-            if (snapshot.hasError) {
-              return _buildErrorUI(snapshot.error.toString(), localizations);  // 다국어 적용
-            }
-            if (!snapshot.hasData || snapshot.data!.length < 2) {
-              return Center(
-                child: Text(
-                  localizations.errorNoData, // 다국어 적용
-                  style: const TextStyle(color: Colors.white),
+                    final metadata = snapshot.data![0];
+                    final chartData = snapshot.data![1] as List<FngIndexModel>;
+                    final fngIndexModel = chartData.isNotEmpty ? chartData[0] : null;
+
+                    // 특정 Rating으로 필터링된 데이터
+                    final pastData = StatusUtils.filterByRating(
+                      initialList: chartData,
+                      rating: RECENT_RATING,
+                    );
+
+                    if (fngIndexModel == null || metadata == null) {
+                      return _buildErrorUI(
+                        "데이터를 불러오는 중 오류가 발생했습니다.",
+                        localizations,
+                      );
+                    }
+
+                    return SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: AppStyles.padding),
+                        child: Column(
+                          children: [
+                            MainStat(
+                              fngIndexModel: fngIndexModel,
+                              metadata: metadata,
+                              onRefresh: _updateData, // 개선된 새로고침 함수
+                            ),
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                return SizedBox(
+                                  width: constraints.maxWidth,
+                                  height: 300,
+                                  child: ChartStat(
+                                    chartData: chartData,
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(
+                              height: AppStyles.padding,
+                            ),
+                            PastStat(
+                              recentRating: RECENT_RATING,
+                              pastData: pastData,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            }
 
-            final metadata = snapshot.data![0];
-            final chartData = snapshot.data![1] as List<FngIndexModel>;
-            final fngIndexModel = chartData.isNotEmpty ? chartData[0] : null;
-
-            // 특정 Rating으로 필터링된 데이터
-            final pastData = StatusUtils.filterByRating(
-              initialList: chartData,
-              rating: recentRating,
-            );
-
-            if (fngIndexModel == null || metadata == null) {
-              return _buildErrorUI(
-                "데이터를 불러오는 중 오류가 발생했습니다.",
-                localizations,
-              );
-            }
-            return SingleChildScrollView(
-              child: Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: AppStyles.padding),
-                child: Column(
-                  children: [
-                    MainStat(
-                        fngIndexModel: fngIndexModel,
-                        metadata: metadata,
-                        onRefresh: _loadData),
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        return SizedBox(
-                          width: constraints.maxWidth,
-                          height: 300, // 명시적인 높이 설정
-                          child: ChartStat(
-                            chartData: chartData,
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(
-                      height: AppStyles.padding,
-                    ),
-                    PastStat(
-                      recentRating: recentRating,
-                      pastData: pastData,
-                    ),
-                  ],
+          // 업데이트 완료 메시지 (origin에서 가져온 기능)
+          if (_updateCompleted)
+            Positioned(
+              bottom: 16,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade900.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.check_circle, color: Colors.white, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        '이미 데이터가 업데이트 됐어요', // TODO: 다국어 적용 필요
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            );
-          }),
+            ),
+        ],
+      ),
     );
   }
 
+  // 개선된 업데이트 함수 (origin에서 가져옴)
+  Future<void> _updateData() async {
+    setState(() {
+      _isUpdating = true;
+      _updateCompleted = false;
+    });
+
+    try {
+      await FngIndexRepository.fetchData();
+
+      if (mounted) {
+        setState(() {
+          _isUpdating = false;
+          _updateCompleted = true;
+          _loadData(); // 화면 새로고침
+        });
+
+        // 잠시 후 완료 메시지 숨기기
+        Future.delayed(const Duration(seconds: 3), () {
+          if (mounted) {
+            setState(() {
+              _updateCompleted = false;
+            });
+          }
+        });
+      }
+    } catch (error) {
+      print('API 업데이트 오류: $error');
+      if (mounted) {
+        setState(() {
+          _isUpdating = false;
+        });
+      }
+    }
+  }
+
+  Future<List<dynamic>> _fetchData() async {
+    final metadata = await GetIt.I<Isar>().metadatas.get(0);
+    final indexAll = await GetIt.I<Isar>()
+        .fngIndexModels
+        .where()
+        .sortByDateTimeDesc()
+        .findAll();
+
+    return [metadata, indexAll];
+  }
+
+  void _loadData() {
+    setState(() {
+      _futureData = _fetchData();
+    });
+  }
+
   Widget _buildSkeletonUI() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: SafeArea(
-        child: Column(
-          children: List.generate(3, (index) {
-            return Shimmer.fromColors(
-              baseColor: Colors.grey[700]!,
-              highlightColor: Colors.grey[500]!,
-              child: Container(
-                height: 100,
-                margin: const EdgeInsets.only(bottom: 16.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            );
-          }),
-        ),
-      ),
-    );
+    return const LoadingSkeleton();
   }
 
   Widget _buildErrorUI(String errorMessage, AppLocalizations localizations) {
@@ -189,11 +244,18 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Text(
             localizations.errorMessage(errorMessage), // 다국어 적용
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
             onPressed: _loadData,
             child: Text(localizations.errorRetry), // 다국어 적용
           ),
@@ -202,7 +264,20 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // 🧪 언어 테스트 다이얼로그
+  // 헬퍼 함수들 (origin에서 가져옴)
+  bool _shouldShowLoading(AsyncSnapshot<List<dynamic>> snapshot) {
+    return snapshot.connectionState == ConnectionState.waiting;
+  }
+
+  bool _shouldShowError(AsyncSnapshot<List<dynamic>> snapshot) {
+    return snapshot.hasError;
+  }
+
+  bool _shouldShowEmptyState(AsyncSnapshot<List<dynamic>> snapshot) {
+    return !snapshot.hasData || snapshot.data!.length < 2;
+  }
+
+  // 🧪 언어 테스트 다이얼로그 (테스트용)
   void _showLanguageTestDialog(BuildContext context, AppLocalizations localizations) {
     showDialog(
       context: context,
@@ -212,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
           '🌐 Language Test',
           style: TextStyle(color: Colors.white),
         ),
-        content: Container(
+        content: SizedBox(
           width: double.maxFinite,
           child: SingleChildScrollView(
             child: Column(
@@ -324,7 +399,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // 🌍 현재 언어 정보 표시
+  // 🌍 현재 언어 정보 표시 (테스트용)
   void _showLanguageInfo(BuildContext context, AppLocalizations localizations) {
     final currentLocale = Localizations.localeOf(context);
 
