@@ -2,6 +2,7 @@ import 'package:buy_or_bye/model/fng_index_model.dart';
 import 'package:flutter/material.dart' hide DateUtils;
 import 'package:buy_or_bye/utils/date_utils.dart';
 import 'package:buy_or_bye/const/colors.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // 다국어 지원
 
 class PastStat extends StatelessWidget {
   static const double padding = 24;
@@ -16,6 +17,8 @@ class PastStat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!; // 다국어 지원
+
     return Card(
       color: backgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
@@ -24,19 +27,19 @@ class PastStat extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildTitle(),
-            _buildListContainer(pastData), // ✅ 좌우 패딩 제거
+            _buildTitle(localizations),
+            _buildListContainer(pastData, localizations),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTitle() {
+  Widget _buildTitle(AppLocalizations localizations) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Text(
-        '최근 ${recentRating.krName}',
+        '${localizations.labelRecent} ${_getLocalizedRatingName(localizations)}', // 다국어 적용
         style: const TextStyle(
           color: Colors.white,
           fontSize: 18,
@@ -46,7 +49,23 @@ class PastStat extends StatelessWidget {
     );
   }
 
-  Widget _buildListContainer(List<FngIndexModel> fngIndexModels) {
+  // Rating에 따른 다국어 이름 반환
+  String _getLocalizedRatingName(AppLocalizations localizations) {
+    switch (recentRating) {
+      case Rating.extremeGreed:
+        return localizations.ratingExtremeGreed;
+      case Rating.greed:
+        return localizations.ratingGreed;
+      case Rating.neutral:
+        return localizations.ratingNeutral;
+      case Rating.fear:
+        return localizations.ratingFear;
+      case Rating.extremeFear:
+        return localizations.ratingExtremeFear;
+    }
+  }
+
+  Widget _buildListContainer(List<FngIndexModel> fngIndexModels, AppLocalizations localizations) {
     return Column(
       children: fngIndexModels.expand((fngIndexModel) {
         return [
@@ -63,10 +82,10 @@ class PastStat extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    const Text(
-                      '탐욕 지수',
+                    Text(
+                      localizations.titleGreedIndex, // 다국어 적용
                       textAlign: TextAlign.right,
-                      style: TextStyle(fontSize: 14, color: darkGrey),
+                      style: const TextStyle(fontSize: 14, color: darkGrey),
                     ),
                     Text(
                       '${fngIndexModel.index.round()} / 100',

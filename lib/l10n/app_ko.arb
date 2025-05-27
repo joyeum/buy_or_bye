@@ -131,5 +131,25 @@
   "refresh": "새로고침",
   "@refresh": {
     "description": "Refresh tooltip"
+  },
+  "dialogCalculationTitle": "어떻게 계산했나요?",
+  "@dialogCalculationTitle": {
+    "description": "Title for calculation info dialog"
+  },
+  "dialogCalculationDesc": "CNN에서 발간한 공포탐욕지수를 기반으로 계산해요. 사람들이 공포에 질릴 때를 노려보세요",
+  "@dialogCalculationDesc": {
+    "description": "Description for calculation method"
+  },
+  "dialogConfirm": "확인",
+  "@dialogConfirm": {
+    "description": "Confirm button text"
+  },
+  "dataAlreadyUpdated": "이미 데이터가 업데이트 됐어요",
+  "@dataAlreadyUpdated": {
+    "description": "Message when data is already up to date"
+  },
+  "tooltipGreedInfo": "탐욕 지수 정보",
+  "@tooltipGreedInfo": {
+    "description": "Tooltip for greed index info button"
   }
 }

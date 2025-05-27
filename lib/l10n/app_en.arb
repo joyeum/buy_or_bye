@@ -131,5 +131,25 @@
   "refresh": "Refresh",
   "@refresh": {
     "description": "Refresh tooltip"
+  },
+  "dialogCalculationTitle": "How is it calculated?",
+  "@dialogCalculationTitle": {
+    "description": "Title for calculation info dialog"
+  },
+  "dialogCalculationDesc": "Based on CNN's Fear & Greed Index. Look for opportunities when people are panicking",
+  "@dialogCalculationDesc": {
+    "description": "Description for calculation method"
+  },
+  "dialogConfirm": "OK",
+  "@dialogConfirm": {
+    "description": "Confirm button text"
+  },
+  "dataAlreadyUpdated": "Data is already up to date",
+  "@dataAlreadyUpdated": {
+    "description": "Message when data is already up to date"
+  },
+  "tooltipGreedInfo": "Greed Index Info",
+  "@tooltipGreedInfo": {
+    "description": "Tooltip for greed index info button"
   }
 }

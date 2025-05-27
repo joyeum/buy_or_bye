@@ -45,34 +45,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      // 🧪 테스트용 FloatingActionButton (개발 중에만 사용)
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            heroTag: "language_test",
-            mini: true,
-            backgroundColor: Colors.blue,
-            onPressed: () {
-              _showLanguageTestDialog(context, localizations);
-            },
-            child: const Icon(Icons.language, color: Colors.white),
-          ),
-          const SizedBox(height: 8),
-          FloatingActionButton(
-            heroTag: "current_language",
-            mini: true,
-            backgroundColor: Colors.green,
-            onPressed: () {
-              _showLanguageInfo(context, localizations);
-            },
-            child: Text(
-              Localizations.localeOf(context).languageCode.toUpperCase(),
-              style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
-      ),
+      // // 🧪 테스트용 FloatingActionButton (개발 중에만 사용)
+      // floatingActionButton: Column(
+      //   mainAxisSize: MainAxisSize.min,
+      //   children: [
+      //     FloatingActionButton(
+      //       heroTag: "language_test",
+      //       mini: true,
+      //       backgroundColor: Colors.blue,
+      //       onPressed: () {
+      //         _showLanguageTestDialog(context, localizations);
+      //       },
+      //       child: const Icon(Icons.language, color: Colors.white),
+      //     ),
+      //     const SizedBox(height: 8),
+      //     FloatingActionButton(
+      //       heroTag: "current_language",
+      //       mini: true,
+      //       backgroundColor: Colors.green,
+      //       onPressed: () {
+      //         _showLanguageInfo(context, localizations);
+      //       },
+      //       child: Text(
+      //         Localizations.localeOf(context).languageCode.toUpperCase(),
+      //         style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+      //       ),
+      //     ),
+      //   ],
+      // ),
       body: Stack(
         children: [
           // 메인 콘텐츠
