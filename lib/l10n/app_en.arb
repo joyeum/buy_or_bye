@@ -1,0 +1,135 @@
+{
+  "@@locale": "en",
+  "ratingExtremeGreed": "High Risk",
+  "@ratingExtremeGreed": {
+    "description": "Rating for extreme greed state"
+  },
+  "ratingGreed": "Bubble",
+  "@ratingGreed": {
+    "description": "Rating for greed state"
+  },
+  "ratingNeutral": "Neutral",
+  "@ratingNeutral": {
+    "description": "Rating for neutral state"
+  },
+  "ratingFear": "Opportunity",
+  "@ratingFear": {
+    "description": "Rating for fear state"
+  },
+  "ratingExtremeFear": "Best Chance",
+  "@ratingExtremeFear": {
+    "description": "Rating for extreme fear state"
+  },
+  "commentExtremeGreed": "Are hype-driven traders\njumping in right now?",
+  "@commentExtremeGreed": {
+    "description": "Comment for extreme greed state"
+  },
+  "commentGreed": "Might be overpriced,\nbut fine for long-term investing.",
+  "@commentGreed": {
+    "description": "Comment for greed state"
+  },
+  "commentNeutral": "It's a calm day.\nLong-term trend will be upward.",
+  "@commentNeutral": {
+    "description": "Comment for neutral state"
+  },
+  "commentFear": "Cheaper than usual.\nConsider dollar-cost averaging.",
+  "@commentFear": {
+    "description": "Comment for fear state"
+  },
+  "commentExtremeFear": "It's a golden opportunity!\nNow's the time to buy the dip.",
+  "@commentExtremeFear": {
+    "description": "Comment for extreme fear state"
+  },
+  "titleGreedIndex": "Greed Index",
+  "@titleGreedIndex": {
+    "description": "Title for greed index"
+  },
+  "titleFearGreedIndex": "Fear & Greed Index",
+  "@titleFearGreedIndex": {
+    "description": "Title for fear greed index chart"
+  },
+  "updatedValue": "Updated {value}",
+  "@updatedValue": {
+    "description": "Updated timestamp text",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "description": "The formatted datetime value"
+      }
+    }
+  },
+  "labelRecent": "Recent",
+  "@labelRecent": {
+    "description": "Recent label for history section"
+  },
+  "month1": "Jan",
+  "@month1": {
+    "description": "January"
+  },
+  "month2": "Feb",
+  "@month2": {
+    "description": "February"
+  },
+  "month3": "Mar",
+  "@month3": {
+    "description": "March"
+  },
+  "month4": "Apr",
+  "@month4": {
+    "description": "April"
+  },
+  "month5": "May",
+  "@month5": {
+    "description": "May"
+  },
+  "month6": "Jun",
+  "@month6": {
+    "description": "June"
+  },
+  "month7": "Jul",
+  "@month7": {
+    "description": "July"
+  },
+  "month8": "Aug",
+  "@month8": {
+    "description": "August"
+  },
+  "month9": "Sep",
+  "@month9": {
+    "description": "September"
+  },
+  "month10": "Oct",
+  "@month10": {
+    "description": "October"
+  },
+  "month11": "Nov",
+  "@month11": {
+    "description": "November"
+  },
+  "month12": "Dec",
+  "@month12": {
+    "description": "December"
+  },
+  "errorNoData": "No data available.",
+  "@errorNoData": {
+    "description": "Error message when no data available"
+  },
+  "errorRetry": "Try Again",
+  "@errorRetry": {
+    "description": "Retry button text"
+  },
+  "errorMessage": "Error occurred: {error}",
+  "@errorMessage": {
+    "description": "General error message",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+  "refresh": "Refresh",
+  "@refresh": {
+    "description": "Refresh tooltip"
+  }
+}

@@ -10,7 +10,7 @@ const statusLevels = [
       lightColor: Color(0xFF6EC6FF),
       fontColor: Colors.black,
       tempImage: '🌟',
-      comment: '절호의 기회에요'),
+      comment: '절호의 기회에요\n저점을 잡으려면 지금!'),
   StatusModel(
       level: 1,
       label: '기회',
@@ -19,7 +19,7 @@ const statusLevels = [
       lightColor: Color(0xFF62efff),
       fontColor: Colors.black,
       tempImage: '⭐',
-      comment: '평소보다 싸게 살 수 있어요'),
+      comment: '평소보다 싸게 살 수 있어요\n분할 매수를 고려해보세요'),
   StatusModel(
       level: 2,
       label: '중립',
@@ -46,5 +46,5 @@ const statusLevels = [
       lightColor: Color(0xFFff7961),
       fontColor: Colors.black,
       tempImage: '🚨',
-      comment: '주변 고점 판독기들이 주식을\n사고 계시진 않나요?'),
+      comment: '고점 판독기들이 주식을\n사고 계시진 않나요?'),
 ];

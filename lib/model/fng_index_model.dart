@@ -26,6 +26,7 @@ enum Rating {
     }
   }
 
+  // 기존 krName 메서드 유지 (다국어는 status_utils.dart에서 처리)
   String get krName {
     switch (this) {
       case Rating.extremeGreed:

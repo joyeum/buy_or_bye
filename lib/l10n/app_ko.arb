@@ -1,0 +1,135 @@
+{
+  "@@locale": "ko",
+  "ratingExtremeGreed": "고점 주의",
+  "@ratingExtremeGreed": {
+    "description": "Rating for extreme greed state"
+  },
+  "ratingGreed": "버블",
+  "@ratingGreed": {
+    "description": "Rating for greed state"
+  },
+  "ratingNeutral": "중립",
+  "@ratingNeutral": {
+    "description": "Rating for neutral state"
+  },
+  "ratingFear": "기회",
+  "@ratingFear": {
+    "description": "Rating for fear state"
+  },
+  "ratingExtremeFear": "절호의 기회",
+  "@ratingExtremeFear": {
+    "description": "Rating for extreme fear state"
+  },
+  "commentExtremeGreed": "고점 판독기들이 주식을\n사고 계시진 않나요?",
+  "@commentExtremeGreed": {
+    "description": "Comment for extreme greed state"
+  },
+  "commentGreed": "높게 평가되었을 수 있지만\n장기투자 관점에서는 괜찮아요",
+  "@commentGreed": {
+    "description": "Comment for greed state"
+  },
+  "commentNeutral": "오늘은 심심한 날이네요\n결국 장기 우상향 할 거에요",
+  "@commentNeutral": {
+    "description": "Comment for neutral state"
+  },
+  "commentFear": "평소보다 싸게 살 수 있어요\n분할 매수를 고려해보세요",
+  "@commentFear": {
+    "description": "Comment for fear state"
+  },
+  "commentExtremeFear": "절호의 기회에요\n저점을 잡으려면 지금!",
+  "@commentExtremeFear": {
+    "description": "Comment for extreme fear state"
+  },
+  "titleGreedIndex": "탐욕 지수",
+  "@titleGreedIndex": {
+    "description": "Title for greed index"
+  },
+  "titleFearGreedIndex": "공포 탐욕 지수",
+  "@titleFearGreedIndex": {
+    "description": "Title for fear greed index chart"
+  },
+  "updatedValue": "{value} 업데이트 됨",
+  "@updatedValue": {
+    "description": "Updated timestamp text",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "description": "The formatted datetime value"
+      }
+    }
+  },
+  "labelRecent": "최근",
+  "@labelRecent": {
+    "description": "Recent label for history section"
+  },
+  "month1": "1월",
+  "@month1": {
+    "description": "January"
+  },
+  "month2": "2월",
+  "@month2": {
+    "description": "February"
+  },
+  "month3": "3월",
+  "@month3": {
+    "description": "March"
+  },
+  "month4": "4월",
+  "@month4": {
+    "description": "April"
+  },
+  "month5": "5월",
+  "@month5": {
+    "description": "May"
+  },
+  "month6": "6월",
+  "@month6": {
+    "description": "June"
+  },
+  "month7": "7월",
+  "@month7": {
+    "description": "July"
+  },
+  "month8": "8월",
+  "@month8": {
+    "description": "August"
+  },
+  "month9": "9월",
+  "@month9": {
+    "description": "September"
+  },
+  "month10": "10월",
+  "@month10": {
+    "description": "October"
+  },
+  "month11": "11월",
+  "@month11": {
+    "description": "November"
+  },
+  "month12": "12월",
+  "@month12": {
+    "description": "December"
+  },
+  "errorNoData": "데이터가 없습니다.",
+  "@errorNoData": {
+    "description": "Error message when no data available"
+  },
+  "errorRetry": "다시 시도하기",
+  "@errorRetry": {
+    "description": "Retry button text"
+  },
+  "errorMessage": "오류 발생: {error}",
+  "@errorMessage": {
+    "description": "General error message",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+  "refresh": "새로고침",
+  "@refresh": {
+    "description": "Refresh tooltip"
+  }
+}
